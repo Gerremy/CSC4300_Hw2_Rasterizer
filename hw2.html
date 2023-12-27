@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Line Rasterizer</title>
+
+
+<script>
+    var canvas;    // DOM object corresponding to the canvas
+    var graphics;  // 2D graphics context for drawing on the canvas
+    var gridSize = 40;
+
+    function setPixel(x, y, color) 
+    {
+        graphics.fillStyle = color;
+        graphics.fillRect(x, y, 1, 1);
+    }
+
+    /*
+    function randomColor() {
+        var color = '#';
+        var hexDigits = '0123456789ABCDEF';
+
+        for (var i = 0; i < 6; i++) {
+            var index = Math.floor(Math.random() * 16);
+            color = color + hexDigits[index];
+        }
+
+        console.log(color);
+        return color;
+    }
+    */
+
+    function drawLineX(x1, y1, x2, y2, color) {
+        var dy = y2 - y1;
+        var dx = x2 - x1;
+        var m = dy / dx;
+        var y = y1;
+
+        for (var x = x1; x <= x2; x++) {
+            setPixel(x, Math.round(y), color);
+            y += m;
+        }
+    }
+
+    function drawLineY(x1, y1, x2, y2, color) {
+        var dy = y2 - y1;
+        var dx = x2 - x1;
+        var mInv = dx/dy;
+        var x = x1;
+
+        for (var y = y1; y <= y2; y++) {
+            setPixel(Math.round(x), y, color);
+            x += mInv;
+        }
+    }
+
+    function drawLine(x1,y1,x2,y2,color) {
+        // TODO: your code here, using calls to drawLineX and drawLineY
+        // Implement drawLineX and drawLineY separately (as done in class)
+
+        dy = y2 - y1;
+        dx = x2 - x1;
+
+        if (dx == 0 && dy == 0) {
+            setPixel(x1, y1, color);
+            return;
+        } else if (Math.abs(dx) >= Math.abs(dy)) {
+            if (x2 > x1) {
+                drawLineX(x1, y1, x2, y2, color);
+            } else {
+                drawLineX(x2, y2, x1, y1, color);
+            }
+        } else {
+            if (y2 > y1) {
+                drawLineY(x1, y1, x2, y2, color);
+            } else {
+                drawLineY(x2, y2, x1, y1, color);
+            }
+        }
+    }
+    
+    function draw() {
+        /*
+        // TODO: your code here, using calls to drawLine only
+        drawLine(80, 200, 300, 100, "red", 1);    // slope < 1
+        drawLine(300, 100, 80, 200, "purple", 1); // switch points - your code should still work
+        drawLine(200, 80, 100, 300, "blue", 1);   // slope > 1
+        drawLine(80, 150, 280, 150, "green", 1);  // slope = 0
+        drawLine(150, 80, 150, 280, "pink", 1);   // slope = ∞
+        */
+
+        for (var y = 0; y <= canvas.height; y = y + gridSize) {
+            drawLine(0, y, 400, y, "lightgrey");
+        }
+
+        for (var x = 0; x <= canvas.width; x = x + gridSize) {
+            drawLine(x, 0, x, 400, "lightgrey");
+        }
+
+        drawLine(5*gridSize, gridSize, 6*gridSize, 5*gridSize, "red");
+        drawLine(6*gridSize, 5*gridSize, 8*gridSize, 4*gridSize, "red");
+        drawLine(8*gridSize, 4*gridSize, 7*gridSize, 6*gridSize, "red");
+        drawLine(7*gridSize, 6*gridSize, 9*gridSize, 6*gridSize, "red");
+        drawLine(9*gridSize, 6*gridSize, 6*gridSize, 7*gridSize, "red");
+        drawLine(6*gridSize, 7*gridSize, 5*gridSize, 9*gridSize, "red");
+        drawLine(5*gridSize, 9*gridSize, 4*gridSize, 7*gridSize, "red");
+        drawLine(4*gridSize, 7*gridSize, gridSize, 6*gridSize, "red");
+        drawLine(gridSize, 6*gridSize, 3*gridSize, 6*gridSize, "red");
+        drawLine(3*gridSize, 6*gridSize, 2*gridSize, 4*gridSize, "red");
+        drawLine(2*gridSize, 4*gridSize, 4*gridSize, 5*gridSize, "red");
+        drawLine(4*gridSize, 5*gridSize, 5*gridSize, gridSize, "red");
+
+    }
+
+    function main() {
+        canvas = document.getElementById("theCanvas");
+        graphics = canvas.getContext("2d");
+        draw();  // draw something on the canvas
+    }
+</script>
+
+
+</head>
+<body onload="main()">
+    <canvas id="theCanvas" width="400" height="400" style="border: 1px solid lightgrey"></canvas>
+</body>
+</html>
